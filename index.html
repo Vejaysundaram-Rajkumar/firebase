@@ -4,21 +4,23 @@
 <link rel="stylesheet" href="index_style.css">
 <body>
 
-<form action="/action_page.php" style="border:1px solid #ccc">
   <div class="container">
     <h1>Sign Up</h1>
     <p>Please fill in this form to create an account.</p>
     <hr>
-
+    <label for="email"><b>Username</b></label>
+    <br>
+    <input  type="text" placeholder="Enter username" id="username" name="username" required>
+    <br>
     <label for="email"><b>Email</b></label>
     <br>
-    <input type="text" placeholder="Enter Email" name="email" required>
+    <input  type="text" placeholder="Enter Email" id="email" name="email" required>
     <br>
     <label for="psw"><b>Password</b></label>
     <br>
-    <input type="password" placeholder="Enter Password" name="psw" required>
+    <input  type="password" placeholder="Enter Password" id="password" name="psw" required>
     <br>
-    <button type="submit" class="signupbtn">Sign Up</button>
+    <input type="submit" class="signupbtn" id="signup" value="Sign in">
     <br><br>
     <h1>or</h1><br><br>
 
@@ -29,15 +31,15 @@
     <div class="clearfix">
     </div>
   </div>
-</form>
+
 
 </body>
 
 <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
-    import { getAuth ,GoogleAuthProvider,signInWithRedirect,getRedirectResult } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-auth.js";
-
+    import { getDatabase, set, ref} from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-auth.js";
 
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
@@ -54,32 +56,59 @@
   
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider(app);
 
-    googlebut.addEventListener('click',(e)=> {
-        signInWithRedirect(auth, provider);
+    const database=getDatabase(app);
+    const auth = getAuth( );
 
-    getRedirectResult(auth)
-        .then((result) => {
-        // This gives you a Google Access Token. You can use it to access Google APIs.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
+    signup.addEventListener('click',(e)=> {
+    
+    var username=document.getElementById('username').value;
+    var password=document.getElementById('password').value;
+    var email=document.getElementById('email').value;
 
-        // The signed-in user info.
-        const user = result.user;
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-        }).catch((error) => {
-        // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            // ...
-        });
-    });  
+    createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+
+//     set(ref(database,'users/' + user.uid),{
+//         username: username,
+//         email:email
+//   })
+
+    alert("User created!!");
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    alert(errorMessage);
+  });   
+
+    });
+    
+//     googlebut.addEventListener('click',(e)=> {
+        
+//     signInWithPopup(auth, provider)
+//   .then((result) => {
+//     // This gives you a Google Access Token. You can use it to access the Google API.
+//     const credential = GoogleAuthProvider.credentialFromResult(result);
+//     const token = credential.accessToken;
+//     // The signed-in user info.
+//     const user = result.user;
+//     // IdP data available using getAdditionalUserInfo(result)
+//     // ...
+//     alert("Account created sucessfully!");
+//   }).catch((error) => {
+//     // Handle Errors here.
+//     const errorCode = error.code;
+//     const errorMessage = error.message;
+//     // The email of the user's account used.
+//     const email = error.customData.email;
+//     // The AuthCredential type that was used.
+//     const credential = GoogleAuthProvider.credentialFromError(error);
+//     // ...
+//     alert(errorMessage);
+//   });
+//     });  
   </script>
 </html>
